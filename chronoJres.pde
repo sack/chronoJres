@@ -45,9 +45,14 @@ int bgColor = color(0);
 
 boolean firstStart=true;
 
+ PImage logo;
 
 
 void setup() {
+  
+  PImage b;
+  // Images must be in the "data" directory to load correctly
+   logo = loadImage("logo.jpg");
   
   font = loadFont("LcdD-200.vlw"); 
   font2 = loadFont("NimbusSanL-BoldCondItal-150.vlw");
@@ -86,6 +91,14 @@ void draw(){
     textFont(font);
     text(String.format("%02d", Minutes)+":"+ String.format("%02d", Seconds),270, height/2);
     
+    textFont(font3);
+    fill(255,70);
+    int s = second();  
+    int m = minute(); 
+    int h = hour();    
+    text(String.format("%02d", h)+":"+ String.format("%02d", m)+":"+ String.format("%02d", s),680, 750);
+    
+    
     
   }
   
@@ -103,6 +116,9 @@ void draw(){
     rectMode(CENTER);
     fill(255);
     text(String.format("%02d", Minutes)+":"+ String.format("%02d", Seconds),270, height/2);
+    
+    
+    
     
 
   }
@@ -134,10 +150,11 @@ void draw(){
 
 void startup(){
  background(0);
+ image(logo, 20, 410);
      textFont(font);
-    text("JRES 2011",120, height/3);
+    text("JRES 2011",120, 200);
     int s = second();  
     int m = minute(); 
     int h = hour();    
-    text(String.format("%02d", h)+":"+ String.format("%02d", m)+":"+ String.format("%02d", s),180, 500);
+    text(String.format("%02d", h)+":"+ String.format("%02d", m)+":"+ String.format("%02d", s),180, 400);
 }
