@@ -1,124 +1,95 @@
-// thx to Daniel Shiffman for the startup code
-
-
 class Timer {
- 
-  int savedTime; // When Timer started
-  int totalTime; // How long Timer should last
-  int presentationTime; // time for slides:)
-  int questionTime; // time for questions
-  int passedTime;
-  int pauseTime; //time of pause
+
+  long startTime;
+  long currentTime;
+
+  boolean running=false;
+  boolean paused=false;
+  boolean theEnd=false;
+
+  long questionsTime=0;
+  long sessionTime=0;
   
-  boolean started=false;
-  boolean pause=false;
+  long sessionTimeLeft=0;
+  long questionsTimeLeft=0;
   
-  Timer(int tempPresentationTime,int tempQuestionTime) {
-    presentationTime = tempPresentationTime;
-    questionTime = tempQuestionTime;
-    totalTime = presentationTime + questionTime;
+  boolean session=false;
+
+  Timer(int sT, int qT) {
+    questionsTime = qT;
+    sessionTime = sT;
+    running = false ;
+    currentTime = 0 ;
+    session=true;
+    theEnd=false;
+  }
+
+  float getCurrentTimeMs() {
+    if ( running )
+      return (millis() - startTime);
+    else
+      return currentTime ;
+  }
+
+  int getCurrentTimeSec() {
+    if ( running )
+      return ( (int) ( (millis() - startTime) / 1000.0) ) ;
+    else
+      return ( (int) (currentTime / 1000.0) ) ;
   }
   
-  // Starting the timer
-  void start() {
-    // When the timer starts it stores the current time in milliseconds.
-    savedTime = millis(); 
-    started=true;
-    
-    println("---------------------------------start");
-    
-  }
-  
-  int getPassedTime(){
-    if (started){
-      print("-");
-      //println((millis()- savedTime+pauseTime)/1000);
-      return (millis()- savedTime+pauseTime);
-    }else{  
-      return (0);
+  void start()
+  {
+    if (paused)
+    {
+      startTime = millis() - currentTime ;
+      running=true;
+      paused=false;
     }
-   
-   
-  }
-  
-  int getTotalTime(){
-    return (totalTime);
-  }
-  
-   int getPresentationTime(){
-    return (presentationTime);
-  }
-  int getQuestionTime(){
-    return (questionTime);
-  }
-  
-  
-  int getPresentationTimeLeft(){
-    return (presentationTime - getPassedTime());
-  }
-  
-  int getQuestionTimeLeft(){
-    return (totalTime-getPassedTime());
-  }
-  
-    // Timer fini Presentation + question 
-  boolean isPresentationFinished() { 
-      // Check how much time has passed
-      
-      if (getPassedTime() > presentationTime) {
-        return true;
-      } else {
-        return false;
-      }
+    else if (!running) {
 
-   }
- 
-  // Timer fini Presentation + question 
-  boolean isFinished() { 
-      // Check how much time has passed
-      
-      if (getPassedTime() > totalTime) {
-        return true;
-      } else {
-        return false;
-      }
+      running = true ;
+      startTime = millis() ;
+    }
+  }
 
-   }
-   
-   boolean isStarted() { 
+  void pause()
+  {  
+    if (running)
+    {
+      currentTime = millis() - startTime ;
+      running = false ;
+      paused=true;
+    }
+  }
+
+  float getSessionTimeLeft()
+  {
+    float tLeft = sessionTime-getCurrentTimeMs();
     
-        return started;
-     
-   }
-   boolean isPaused() { 
-      // hold on
-        
-        return pause;
-      
-
-   }
-   
-   
-   boolean pause() { 
-      // hold on
-        if (started){
-        started=false;
-        pause=true;
-        pauseTime=millis();
-        println ("pause");
-        }else{
-        started=true;
-        pause=false;
-        println ("play");
-        }
-        
-        return true;
-      
-
-   }
-   
-   
-   
-   
+    if (tLeft <= 0)
+    {
+      session=false;
+      running=false;
+      start();
+    }
+    return tLeft;
+  }
   
- }
+  float getQuestionsTimeLeft()
+  {
+     
+    float tLeft = questionsTime-getCurrentTimeMs();
+    
+    if (tLeft <= 0)
+    {
+      session=true;
+      running=false;
+      theEnd=true;
+      
+    }
+    return tLeft;
+  }
+  
+}
+

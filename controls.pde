@@ -108,8 +108,8 @@ public void controlEvent(ControlEvent theEvent) {
    pauseBut.setVisible(true);
    configBut.setVisible(false);
    //background(bgColor);
-
-     timer.pause();
+   firstStart=false;
+   timer.start();
  
  }
  if (theEvent.controller().name() == pause)
