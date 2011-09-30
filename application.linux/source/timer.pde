@@ -15,7 +15,7 @@ class Timer {
   
   boolean session=false;
 
-  Timer(int sT, int qT) {
+  Timer(long sT, long qT) {
     questionsTime = qT;
     sessionTime = sT;
     running = false ;
@@ -84,8 +84,9 @@ class Timer {
     if (tLeft <= 0)
     {
       session=true;
-      running=false;
+      running=true;
       theEnd=true;
+      startTime = millis() ;
       
     }
     return tLeft;

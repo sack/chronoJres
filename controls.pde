@@ -42,8 +42,8 @@ void initConfig() {
  questionLabel = controlP5.addTextlabel(labelQuestion, labelQuestion, 260,
 680);
 
- qMinutsTf.setValue(defaultMin);
- qSecondsTf.setValue(defaultSec);
+ qMinutsTf.setValue(defaultQuestionMin);
+ qSecondsTf.setValue(defaultQuestionSec);
 
  minutsTf.setFocus(true);
 
@@ -154,14 +154,14 @@ public void controlEvent(ControlEvent theEvent) {
    hideConfig();
    showBut();
      //afficher startup
-   startup();
+     startup();
  }
  if (theEvent.controller().name() == cancel)
  {
    //on efface la config et on affiche les boutons
    hideConfig();
    showBut();
-     //afficher startup
+     //afficher startup    
    startup();
  }
 }

@@ -19,8 +19,11 @@ String labelTime="Temps de la session";
 String labelQuestion="Temps des questions";
 
 //temps par defaut
-String defaultMin="45";
+String defaultMin="35";
 String defaultSec="00";
+
+String defaultQuestionMin="10";
+String defaultQuestionSec="00";
 
 Textfield minutsTf;
 Textfield secondsTf;
@@ -62,7 +65,7 @@ void setup() {
   
   size(1024,768);
   background(0);
-  timer = new Timer(5000,5000);
+  timer = new Timer(2100000,600000);
 
   
   //controls
@@ -107,7 +110,7 @@ void draw(){
     //session
     background(0);
     rectMode(CORNER);
-    fill(0,255,0);
+    fill(0,200,0);
     rect(0, map(timer.getSessionTimeLeft()  , 0, timer.sessionTime, height,0), width,height );
     int Minutes = ((int)timer.getSessionTimeLeft() % (1000*60*60)) / (1000*60);
     int Seconds = (((int)timer.getSessionTimeLeft() % (1000*60*60)) % (1000*60)) / 1000;
@@ -115,8 +118,8 @@ void draw(){
     //  noFill();
     rectMode(CENTER);
     fill(255);
-    text(String.format("%02d", Minutes)+":"+ String.format("%02d", Seconds),270, height/2);
-    
+    //text(String.format("%02d", Minutes)+":"+ String.format("%02d", Seconds),270, height/2);
+    text(String.format("%02d", Minutes)+" min",270, height/2);
     
     
     
@@ -134,8 +137,9 @@ void draw(){
     int Minutes = ((int)timer.getQuestionsTimeLeft() % (1000*60*60)) / (1000*60);
     int Seconds = (((int)timer.getQuestionsTimeLeft() % (1000*60*60)) % (1000*60)) / 1000;
     fill(255);
-    text(String.format("%02d", Minutes)+":"+ String.format("%02d", Seconds), 270 , height/2);
-    
+    //text(String.format("%02d", Minutes)+":"+ String.format("%02d", Seconds), 270 , height/2);
+    text(String.format("%02d", Minutes)+" min",270, height/2);
+
     textFont(font3);
     fill(255,70);
     int s = second();  
@@ -150,11 +154,12 @@ void draw(){
 
 void startup(){
  background(0);
- image(logo, 20, 410);
-     textFont(font);
-    text("JRES 2011",120, 200);
+  firstStart=true;
+ image(logo, 20, 380);
+    textFont(font);
+    //text("JRES 2011",120, 200);
     int s = second();  
     int m = minute(); 
     int h = hour();    
-    text(String.format("%02d", h)+":"+ String.format("%02d", m)+":"+ String.format("%02d", s),180, 400);
+    text(String.format("%02d", h)+":"+ String.format("%02d", m)+":"+ String.format("%02d", s),180, 250);
 }

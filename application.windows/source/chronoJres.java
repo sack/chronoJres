@@ -20,7 +20,7 @@ import java.util.regex.*;
 public class chronoJres extends PApplet {
 
 Timer timer;
-PFont font,font2;
+PFont font,font2,font3,font4;
 
 
 ControlP5 controlP5;
@@ -40,8 +40,11 @@ String labelTime="Temps de la session";
 String labelQuestion="Temps des questions";
 
 //temps par defaut
-String defaultMin="45";
+String defaultMin="35";
 String defaultSec="00";
+
+String defaultQuestionMin="10";
+String defaultQuestionSec="00";
 
 Textfield minutsTf;
 Textfield secondsTf;
@@ -66,17 +69,24 @@ int bgColor = color(0);
 
 boolean firstStart=true;
 
+ PImage logo;
 
 
 public void setup() {
   
+  PImage b;
+  // Images must be in the "data" directory to load correctly
+   logo = loadImage("logo.jpg");
+  
   font = loadFont("LcdD-200.vlw"); 
-  font2 = loadFont("NimbusSanL-BoldCondItal-150.vlw"); 
+  font2 = loadFont("NimbusSanL-BoldCondItal-150.vlw");
+  font3 = loadFont("NimbusSanL-Bold-80.vlw");
+  font4 = loadFont("LcdD-100.vlw");
   textFont(font);
   
   size(1024,768);
   background(0);
-  timer = new Timer(5000,5000);
+  timer = new Timer(2100000,600000);
 
   
   //controls
@@ -91,21 +101,29 @@ public void draw(){
   
   if (firstStart)
   {
-    background(0);
-     textFont(font);
-    text("JRES 2011",120, height/3);
-    int s = second();  
-    int m = minute(); 
-    int h = hour();    
-    text(String.format("%02d", h)+":"+ String.format("%02d", m)+":"+ String.format("%02d", s),180, 500);
+   
+    startup();
 
   }
   else if (timer.theEnd)
   {
     background(255,0,0);
-     textFont(font2);
-    text("Temps d\u00e9pass\u00e9",55, 200);
-     
+     textFont(font4);
+    text("Temps d\u00e9pass\u00e9",200, 200);
+    int Minutes = ((int)timer.getCurrentTimeMs() % (1000*60*60)) / (1000*60);
+    int Seconds = (((int)timer.getCurrentTimeMs() % (1000*60*60)) % (1000*60)) / 1000;
+    textFont(font);
+    text(String.format("%02d", Minutes)+":"+ String.format("%02d", Seconds),270, height/2);
+    
+    textFont(font3);
+    fill(255,70);
+    int s = second();  
+    int m = minute(); 
+    int h = hour();    
+    text(String.format("%02d", h)+":"+ String.format("%02d", m)+":"+ String.format("%02d", s),680, 750);
+    
+    
+    
   }
   
   
@@ -113,19 +131,24 @@ public void draw(){
     //session
     background(0);
     rectMode(CORNER);
-    fill(0,255,0);
+    fill(0,200,0);
     rect(0, map(timer.getSessionTimeLeft()  , 0, timer.sessionTime, height,0), width,height );
     int Minutes = ((int)timer.getSessionTimeLeft() % (1000*60*60)) / (1000*60);
     int Seconds = (((int)timer.getSessionTimeLeft() % (1000*60*60)) % (1000*60)) / 1000;
-//    println ( timer.getSessionTimeLeft() +":"+ Minutes+":"+ Seconds);
+    //  println ( timer.getSessionTimeLeft() +":"+ Minutes+":"+ Seconds);
     //  noFill();
     rectMode(CENTER);
     fill(255);
-    text(String.format("%02d", Minutes)+":"+ String.format("%02d", Seconds),180, height/2);
+    //text(String.format("%02d", Minutes)+":"+ String.format("%02d", Seconds),270, height/2);
+    text(String.format("%02d", Minutes)+" min",270, height/2);
+    
+    
+    
 
   }
   else if (!timer.session && timer.running) {
     //questions
+    textFont(font);
     background(255,165,0);
     rectMode(CENTER);
    // text("Questions", 50 , height/2);
@@ -135,10 +158,32 @@ public void draw(){
     int Minutes = ((int)timer.getQuestionsTimeLeft() % (1000*60*60)) / (1000*60);
     int Seconds = (((int)timer.getQuestionsTimeLeft() % (1000*60*60)) % (1000*60)) / 1000;
     fill(255);
-    text(String.format("%02d", Minutes)+":"+ String.format("%02d", Seconds), 180 , height/2);
+    //text(String.format("%02d", Minutes)+":"+ String.format("%02d", Seconds), 270 , height/2);
+    text(String.format("%02d", Minutes)+" min",270, height/2);
+
+    textFont(font3);
+    fill(255,70);
+    int s = second();  
+    int m = minute(); 
+    int h = hour();    
+    text(String.format("%02d", h)+":"+ String.format("%02d", m)+":"+ String.format("%02d", s),680, 750);
+    
+    
   } 
   
 } 
+
+public void startup(){
+ background(0);
+  firstStart=true;
+ image(logo, 20, 380);
+    textFont(font);
+    //text("JRES 2011",120, 200);
+    int s = second();  
+    int m = minute(); 
+    int h = hour();    
+    text(String.format("%02d", h)+":"+ String.format("%02d", m)+":"+ String.format("%02d", s),180, 250);
+}
 public void initBut() {
  //background(bgColor);
  startBut = controlP5.addButton(start, 0, 100, 700, 80, 19);
@@ -183,8 +228,8 @@ public void initConfig() {
  questionLabel = controlP5.addTextlabel(labelQuestion, labelQuestion, 260,
 680);
 
- qMinutsTf.setValue(defaultMin);
- qSecondsTf.setValue(defaultSec);
+ qMinutsTf.setValue(defaultQuestionMin);
+ qSecondsTf.setValue(defaultQuestionSec);
 
  minutsTf.setFocus(true);
 
@@ -258,32 +303,52 @@ public void controlEvent(ControlEvent theEvent) {
    //on remplace pause par start et on met en pause le cpte a rebours
    pauseBut.setVisible(false);
    startBut.setVisible(true);
-   configBut.setVisible(true);
+   
    timer.pause();
    //background(bgColor);
  }
  if (theEvent.controller().name() == raz)
  {
    //on remet a zero le compte
+   configBut.setVisible(true);
+   //afficher startup
+   startup();
+   timer = new Timer(timer.sessionTime,timer.questionsTime);
+     pauseBut.setVisible(false);
+   startBut.setVisible(true);
+   
+
  }
  if (theEvent.controller().name() == config)
  {
+   
    //on maque les boutons et on affiche la configuration
    hideBut();
+      background(bgColor);
+
    showConfig();
  }
  if (theEvent.controller().name() == ok)
  {
    //on recup\u00e8re le temps saisi
    //on masque la config et on rafiche les boutons
+
+   long qTime = ((parseInt(qMinutsTf.getText())*60)+(parseInt(qSecondsTf.getText())))*1000;
+   long sTime = ((parseInt(minutsTf.getText())*60)+(parseInt(secondsTf.getText())))*1000;
+
+   timer = new Timer(sTime,qTime);
    hideConfig();
    showBut();
+     //afficher startup
+     startup();
  }
  if (theEvent.controller().name() == cancel)
  {
    //on efface la config et on affiche les boutons
    hideConfig();
    showBut();
+     //afficher startup    
+   startup();
  }
 }
 class Timer {
@@ -303,7 +368,7 @@ class Timer {
   
   boolean session=false;
 
-  Timer(int sT, int qT) {
+  Timer(long sT, long qT) {
     questionsTime = qT;
     sessionTime = sT;
     running = false ;
@@ -372,8 +437,9 @@ class Timer {
     if (tLeft <= 0)
     {
       session=true;
-      running=false;
+      running=true;
       theEnd=true;
+      startTime = millis() ;
       
     }
     return tLeft;
@@ -382,6 +448,6 @@ class Timer {
 }
 
   static public void main(String args[]) {
-    PApplet.main(new String[] { "--present", "--bgcolor=#666666", "--stop-color=#cccccc", "chronoJres" });
+    PApplet.main(new String[] { "--present", "--bgcolor=#666666", "--hide-stop", "chronoJres" });
   }
 }

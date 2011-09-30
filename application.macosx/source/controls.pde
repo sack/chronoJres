@@ -42,8 +42,8 @@ void initConfig() {
  questionLabel = controlP5.addTextlabel(labelQuestion, labelQuestion, 260,
 680);
 
- qMinutsTf.setValue(defaultMin);
- qSecondsTf.setValue(defaultSec);
+ qMinutsTf.setValue(defaultQuestionMin);
+ qSecondsTf.setValue(defaultQuestionSec);
 
  minutsTf.setFocus(true);
 
@@ -117,31 +117,51 @@ public void controlEvent(ControlEvent theEvent) {
    //on remplace pause par start et on met en pause le cpte a rebours
    pauseBut.setVisible(false);
    startBut.setVisible(true);
-   configBut.setVisible(true);
+   
    timer.pause();
    //background(bgColor);
  }
  if (theEvent.controller().name() == raz)
  {
    //on remet a zero le compte
+   configBut.setVisible(true);
+   //afficher startup
+   startup();
+   timer = new Timer(timer.sessionTime,timer.questionsTime);
+     pauseBut.setVisible(false);
+   startBut.setVisible(true);
+   
+
  }
  if (theEvent.controller().name() == config)
  {
+   
    //on maque les boutons et on affiche la configuration
    hideBut();
+      background(bgColor);
+
    showConfig();
  }
  if (theEvent.controller().name() == ok)
  {
    //on recupère le temps saisi
    //on masque la config et on rafiche les boutons
+
+   long qTime = ((parseInt(qMinutsTf.getText())*60)+(parseInt(qSecondsTf.getText())))*1000;
+   long sTime = ((parseInt(minutsTf.getText())*60)+(parseInt(secondsTf.getText())))*1000;
+
+   timer = new Timer(sTime,qTime);
    hideConfig();
    showBut();
+     //afficher startup
+     startup();
  }
  if (theEvent.controller().name() == cancel)
  {
    //on efface la config et on affiche les boutons
    hideConfig();
    showBut();
+     //afficher startup    
+   startup();
  }
 }
