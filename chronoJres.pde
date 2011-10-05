@@ -66,7 +66,6 @@ void setup() {
   size(1024,768);
   background(0);
   timer = new Timer(2100000,600000);
-
   
   //controls
    controlP5 = new ControlP5(this);
@@ -112,7 +111,8 @@ void draw(){
     rectMode(CORNER);
     fill(0,200,0);
     rect(0, map(timer.getSessionTimeLeft()  , 0, timer.sessionTime, height,0), width,height );
-    int Minutes = ((int)timer.getSessionTimeLeft() % (1000*60*60)) / (1000*60);
+    //Ajout de 1 min ( +60000) pour l'affichage 
+    int Minutes = ((int)timer.getSessionTimeLeft()+60000 % (1000*60*60)) / (1000*60);
     int Seconds = (((int)timer.getSessionTimeLeft() % (1000*60*60)) % (1000*60)) / 1000;
     //  println ( timer.getSessionTimeLeft() +":"+ Minutes+":"+ Seconds);
     //  noFill();
@@ -133,8 +133,9 @@ void draw(){
    // text("Questions", 50 , height/2);
     rectMode(CORNER);
     fill(255,0,0);
-    rect(0, map((timer.getQuestionsTimeLeft()), 0, timer.questionsTime, 0,height), width,height); 
-    int Minutes = ((int)timer.getQuestionsTimeLeft() % (1000*60*60)) / (1000*60);
+    rect(0, map((timer.getQuestionsTimeLeft()), 0, timer.questionsTime, 0,height), width,height);
+     //Ajout de 1 min ( +60000) pour l'affichage  
+    int Minutes = ((int)timer.getQuestionsTimeLeft()+60000 % (1000*60*60)) / (1000*60);
     int Seconds = (((int)timer.getQuestionsTimeLeft() % (1000*60*60)) % (1000*60)) / 1000;
     fill(255);
     //text(String.format("%02d", Minutes)+":"+ String.format("%02d", Seconds), 270 , height/2);
